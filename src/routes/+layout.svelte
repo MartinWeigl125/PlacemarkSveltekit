@@ -1,11 +1,20 @@
 <script lang="ts">
-	import favicon from '$lib/assets/favicon.svg';
+  import { browser } from "$app/environment";
+  import { currentSession } from "$lib/stores";
+  import Menu from "$lib/ui/Menu.svelte";
 
-	let { children } = $props();
+  if (browser) {
+    const savedSession = localStorage.donation;
+    if (savedSession) {
+      const session = JSON.parse(savedSession);
+      currentSession.set(session);
+    }
+  }
 </script>
 
-<svelte:head>
-	<link rel="icon" href={favicon} />
-</svelte:head>
-
-{@render children()}
+<div class="container">
+  {#if $currentSession?.token}
+    <Menu />
+  {/if}
+  <slot />
+</div>

@@ -1,19 +1,13 @@
 import type { Session, User } from "$lib/types/placemark-types";
 import axios from "axios";
-import dotenv from "dotenv";
-
-const result = dotenv.config();
-if (result.error) {
-    console.log(result.error.message);
-}
 
 export const placemarkService = {
-    baseUrl: process.env.placemark_url,
+    baseUrl: "http://localhost:3000",
 
     async signup(user: User): Promise<boolean> {
         try {
             const response = await axios.post(`${this.baseUrl}/api/users`, user);
-        return response.data.success === true;
+        return response.status >= 200 && response.status < 300; 
         } catch (error) {
             console.log(error);
             return false;

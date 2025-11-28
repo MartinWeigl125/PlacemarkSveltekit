@@ -29,7 +29,9 @@
                     <ul>
                         {#each poisOfOpenCategory as poi}
                             <li>
-                                {poi.name}
+                                <a href="/poi/{poi._id}">
+                                    {poi.name}
+                                </a>
                             </li>
                         {/each}
                     </ul>

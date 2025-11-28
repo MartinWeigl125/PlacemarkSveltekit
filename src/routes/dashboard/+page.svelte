@@ -7,20 +7,31 @@
     import LeafletMap from "$lib/ui/LeafletMap.svelte";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
-    export const ssr = false; 
 
     subTitle.set("Placemarks Geo Data");
     let categories: Category[] = [];
     let map: LeafletMap;
+    let pois: Poi[] = [];
 
     onMount(async () => {
-        const pois = await placemarkService.getPois(get(currentSession));
-        pois.forEach((poi: Poi) => {
-            const popup = `${poi.name}`;
-            map.addMarker(poi.latitude, poi.longitude, popup);
+        categories = await placemarkService.getCategories(get(currentSession));
+        pois = await placemarkService.getPois(get(currentSession));
+
+        categories.forEach(c => {
+            map.registerCategory(c.name);
         });
 
-        categories = await placemarkService.getCategories(get(currentSession));
+        pois.forEach(p => {
+            let catName = categories.find(c => c._id === p.categoryid)!.name;
+            let popupText = `<a href='explore/${p._id}'>${p.name}</a>`;
+            
+            map.addMarkerToLayer(
+                catName,
+                p.latitude,
+                p.longitude,
+                popupText
+            );
+        });
     });
 </script>
 

@@ -1,7 +1,7 @@
 <script lang="ts">
   import "leaflet/dist/leaflet.css";
   import { onMount } from "svelte";
-  import type { Control, Map as LeafletMap } from "leaflet";
+  import type { Control, LayerGroup, Map as LeafletMap } from "leaflet";
   import L from "leaflet";
 
   export let id = "home-map-id";
@@ -15,6 +15,8 @@
   let control: Control.Layers;
   let overlays: Control.LayersObject = {};
   let baseLayers: any;
+
+  const categoryLayers = new Map<string, LayerGroup>();
 
   onMount(async () => {
     const leaflet = await import("leaflet");
@@ -45,6 +47,22 @@
     });
     control = leaflet.control.layers(baseLayers, overlays).addTo(imap);
   });
+
+  export function registerCategory(name: string) {
+    const layer = L.layerGroup();
+    categoryLayers.set(name, layer);
+    overlays[name] = layer;
+    layer.addTo(imap);
+    control.addOverlay(layer, name);
+  }
+
+  export function addMarkerToLayer(categoryName: string, lat: number, lng: number, popupText: string) {
+    const layer = categoryLayers.get(categoryName);
+    if (!layer) return;
+
+    const marker = L.marker([lat, lng]).bindPopup(popupText);
+    marker.addTo(layer);
+  }
 
   export function addMarker(lat: number, lng: number, popupText: string) {
     const marker = L.marker([lat, lng]).addTo(imap);

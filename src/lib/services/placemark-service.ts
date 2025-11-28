@@ -1,4 +1,4 @@
-import type { Session, User } from "$lib/types/placemark-types";
+import type { Category, Poi, Session, User } from "$lib/types/placemark-types";
 import axios from "axios";
 
 export const placemarkService = {
@@ -32,4 +32,37 @@ export const placemarkService = {
             return null;
         }
     },
+
+    async getPois(session: Session): Promise<Poi[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + "/api/pois");
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
+        }
+    },
+
+    async getCategories(session: Session): Promise<Category[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + "/api/categories");
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
+        }
+    },
+
+    async getPoisByCategoryId(session: Session, categoryId: string): Promise<Poi[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + `/api/categories/${categoryId}/pois`);
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
+        }
+    }
 }

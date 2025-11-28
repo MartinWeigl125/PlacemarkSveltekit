@@ -12,7 +12,7 @@
   }
 </script>
 
-<div class="container">
+<div class="px-5">
   {#if $currentSession?.token}
     <Menu />
   {/if}

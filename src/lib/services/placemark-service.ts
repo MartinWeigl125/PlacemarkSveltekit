@@ -64,5 +64,11 @@ export const placemarkService = {
         } catch (error) {
             return [];
         }
+    },
+
+    async getPoiById(session: Session, poiId: string): Promise<Poi> {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+        const response = await axios.get(this.baseUrl + `/api/pois/${poiId}`);
+        return response.data;
     }
 }

@@ -1,0 +1,1 @@
+<div class="box" style="height: 60vh">2: Kommentare und Ratings</div>

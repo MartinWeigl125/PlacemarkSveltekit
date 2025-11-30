@@ -1,0 +1,1 @@
+<div class="box" style="height: 60vh">1: Bild(er)</div>

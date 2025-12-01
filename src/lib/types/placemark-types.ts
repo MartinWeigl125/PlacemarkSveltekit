@@ -49,3 +49,8 @@ export interface WriteComment {
     poiid: string;
     _id?: string;
 }
+
+export interface DataSet {
+  labels: string[] | number[];
+  datasets: [{ values: number[] }];
+}

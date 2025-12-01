@@ -29,7 +29,7 @@
 <div class="container">
   <div class="columns is-gapless">
     <div class="column is-two-thirds">
-      <ImageBox />
+      <ImageBox poi={data.poi} />
     </div>
     <div class="column is-one-third">
       <div class="box" style="height: 60vh; overflow-y: auto">

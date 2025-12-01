@@ -93,5 +93,30 @@ export const placemarkService = {
         } catch (error) {
             return false;
         }
+    },
+
+    async deleteImage(session: Session, poiId: string) {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.delete(this.baseUrl + `/api/pois/${poiId}/images`);
+            return response.status == 204;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
+        }
+    },
+
+    async uploadImage(session: Session, poiId: string, file: File | null) {
+        try {
+            const formData = new FormData();
+            formData.append("file", file!);
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Content-Type"] = "multipart/form-data";
+            const response = await axios.post(this.baseUrl + `/api/pois/${poiId}/images`, formData);
+            return response.data
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return null;
+        }
     }
 }

@@ -1,5 +1,7 @@
 import { writable } from "svelte/store";
-import type { Session } from "$lib/types/placemark-types";
+import { type Category, type Comment, type Session } from "$lib/types/placemark-types";
 
 export const currentSession = writable<Session>();
 export const subTitle = writable<string>();
+export const categories = writable<Category[]>();
+export const latestComment = writable<Comment>();

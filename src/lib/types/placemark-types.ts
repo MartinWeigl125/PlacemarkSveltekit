@@ -1,5 +1,6 @@
 export interface Session {
-    name: string;
+    firstName: string;
+    lastName: string;
     _id: string;
     token: string;
 }
@@ -23,9 +24,33 @@ export interface Poi {
     description: string;
     latitude: number;
     longitude: number;
-    img: string;
+    img: string[];
     _id?: string;
     categoryid: string;
     category: Category | string;
     user: User | string;
+}
+
+export interface Comment {
+    comment: string;
+    rating: number;
+    userid: {
+        firstName: string;
+        lastName: string;
+    };
+    poiid: string;
+    _id?: string;
+}
+
+export interface WriteComment {
+    comment: string;
+    rating: number;
+    userid: string;
+    poiid: string;
+    _id?: string;
+}
+
+export interface DataSet {
+  labels: string[] | number[];
+  datasets: [{ values: number[] }];
 }

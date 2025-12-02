@@ -1,4 +1,4 @@
-import type { Category, Poi, Session, User } from "$lib/types/placemark-types";
+import type { Category, Comment, Poi, Session, User, WriteComment } from "$lib/types/placemark-types";
 import axios from "axios";
 
 export const placemarkService = {
@@ -20,9 +20,10 @@ export const placemarkService = {
             if (response.data.success) {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.token;
                 const session: Session = {
-                    name: response.data.name,
+                    firstName: response.data.firstName,
+                    lastName: response.data.lastName,
                     token: response.data.token,
-                    _id: response.data.id
+                    _id: response.data._id
                 };
                 return session;
             }
@@ -63,6 +64,63 @@ export const placemarkService = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return [];
+        }
+    },
+
+    async getPoiById(session: Session, poiId: string): Promise<Poi> {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+        const response = await axios.get(this.baseUrl + `/api/pois/${poiId}`);
+        return response.data;
+    },
+
+    async getCommentsByPoiId(session: Session, poiId: string): Promise<Comment[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + `/api/pois/${poiId}/comments`);
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
+        }
+    },
+
+    async writeComment(session: Session, comment: WriteComment) {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.post(this.baseUrl + "/api/comments", comment);
+            return response.status == 201;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
+        }
+    },
+
+    async deleteImage(session: Session, poiId: string, imgUrl: string) {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.post(this.baseUrl + `/api/pois/${poiId}/images/delete`, { img: imgUrl });
+            return response.status == 204;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
+        }
+    },
+
+    async uploadImage(session: Session, poiId: string, file: File | null) {
+        try {
+            const formData = new FormData();
+            formData.append("file", file!);
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.post(this.baseUrl + `/api/pois/${poiId}/images/upload`, formData, {
+                headers: {
+                    "Authorization": "Bearer " + session.token,
+                    "Content-Type": "multipart/form-data" 
+                }
+            });
+            return response.data
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return null;
         }
     }
 }

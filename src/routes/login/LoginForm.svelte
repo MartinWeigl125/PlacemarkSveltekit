@@ -1,9 +1,10 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { placemarkService } from "$lib/services/placemark-service";
-  import { currentSession } from "$lib/stores";
+  import { categories, currentSession } from "$lib/stores";
   import Message from "$lib/ui/Message.svelte";
   import UserCredentials from "$lib/ui/UserCredentials.svelte";
+  import { get } from "svelte/store";
 
   let email = "";
   let password = "";
@@ -14,6 +15,11 @@
     if (session) {
       currentSession.set(session);
       localStorage.placemark = JSON.stringify(session);
+
+      // load categories 
+      const allCategories = await placemarkService.getCategories(get(currentSession));
+      categories.set(allCategories);
+
       goto("/dashboard");
     } else {
       email = "";

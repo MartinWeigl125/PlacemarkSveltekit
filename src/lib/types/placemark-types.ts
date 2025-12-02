@@ -24,7 +24,7 @@ export interface Poi {
     description: string;
     latitude: number;
     longitude: number;
-    img: string;
+    img: string[];
     _id?: string;
     categoryid: string;
     category: Category | string;

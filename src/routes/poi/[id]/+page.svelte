@@ -11,18 +11,28 @@
   import { get } from "svelte/store";
   import RatingForm from "$lib/ui/RatingForm.svelte";
   import { generatePerRating } from "$lib/services/placemark-utils";
+  import { afterNavigate } from "$app/navigation";
 
   export let data: PageData;
 
   let comments: Comment[] = [];
   let ratingsPerComment: DataSet;
 
-  $: if (data.poi) {
-    (async () => {
-      comments = await placemarkService.getCommentsByPoiId(get(currentSession), encodeURI(data.poi._id!));
-      ratingsPerComment = generatePerRating(comments);
-    })();
+  async function loadComments() {
+    comments = await placemarkService.getCommentsByPoiId(
+      get(currentSession),
+      encodeURI(data.poi._id!)
+    );
+    ratingsPerComment = generatePerRating(comments);
   }
+
+  onMount(loadComments);
+
+  afterNavigate((nav) => {
+    if (nav.to?.route?.id?.startsWith("/poi/")) {
+      loadComments();
+    }
+  });
 
   latestComment.subscribe(comment => {
     if (comment && comment.poiid === data.poi._id) {

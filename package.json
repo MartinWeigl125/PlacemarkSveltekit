@@ -30,6 +30,7 @@
 		"leaflet": "^1.9.4",
 		"prettier": "^3.6.2",
 		"prettier-plugin-svelte": "^3.4.0",
+		"sveaflet": "^0.1.4",
 		"svelte": "^5.43.8",
 		"svelte-check": "^4.3.4",
 		"svelte-frappe-charts": "^2.0.0",

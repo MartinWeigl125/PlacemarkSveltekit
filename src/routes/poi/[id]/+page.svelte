@@ -43,7 +43,7 @@
 </script>
 
 <div class="container">
-  <div class="columns is-gapless">
+  <div class="columns">
     <div class="column is-two-thirds">
       <ImageBox poi={data.poi} />
     </div>
@@ -56,7 +56,7 @@
     </div>
   </div>
 
-  <div class="columns is-gapless">
+  <div class="columns">
     <div class="column">
       <DetailBox poi={data.poi} />
     </div>

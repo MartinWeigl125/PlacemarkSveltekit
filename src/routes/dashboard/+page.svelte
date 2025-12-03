@@ -1,13 +1,12 @@
 <script lang="ts">
     import { placemarkService } from "$lib/services/placemark-service";
-    import { categories, currentSession, subTitle } from "$lib/stores";
+    import { categories, currentSession } from "$lib/stores";
     import type { Poi } from "$lib/types/placemark-types";
     import Card from "$lib/ui/Card.svelte";
-    import LeafletMap from "$lib/ui/LeafletMap.svelte";
+    import LeafletMap from "$lib/ui/maps/LeafletMap.svelte";
     import { onMount } from "svelte";
     import { get } from "svelte/store";
 
-    subTitle.set("Placemarks Geo Data");
     let map: LeafletMap;
     let pois: Poi[] = [];
 

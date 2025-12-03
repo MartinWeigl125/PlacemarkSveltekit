@@ -4,7 +4,7 @@
     export let poi: Poi;
 </script>
 
-<div class="box" style="height: 30vh">
+<div class="box" style="height: 30vh; overflow-y: auto">
     <h2 class="title is-4 mb-3">{poi.name}</h2>
 
     <p class="content mb-4">{poi.description}</p>

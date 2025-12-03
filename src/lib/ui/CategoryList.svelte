@@ -14,7 +14,7 @@
     }
 </script>
 
-<div style="height: 80vh">
+<div style="height: 80vh; overflow-y: auto">
     {#each categories as category, i}
         <div class="box mb-4">
             <button type="button" class="is-flex is-justify-content-space-between is-align-items-center" on:click={async () => await toggle(i, category._id!)} style="cursor: pointer; background: none; border: none; width: 100%;">

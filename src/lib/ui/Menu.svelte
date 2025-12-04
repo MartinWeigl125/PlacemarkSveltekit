@@ -16,6 +16,7 @@
   </div>
   <div id="navbarMenu" class="navbar-menu">
     <div class="navbar-end">
+      <a class="navbar-item" href="/charts"> Statistics</a>
       <a class="navbar-item" href="/logout"> Logout [{$currentSession.firstName} {$currentSession.lastName}]</a>
     </div>
     <div></div>

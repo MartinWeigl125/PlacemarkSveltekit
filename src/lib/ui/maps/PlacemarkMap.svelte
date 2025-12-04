@@ -12,11 +12,11 @@
     zoom?: number;
     height?: number;
     markerLayers?: MarkerLayer[];
-    defautLayer?: string;
+    defaultLayer?: string;
     instance?: any;
   };
 
-  let { location = { lat: 49.013432, lng: 12.101624 }, zoom = 8, height = 80, markerLayers = [], defautLayer = "OpenStreetMap", instance }: Props = $props();
+  let { location = { lat: 49.013432, lng: 12.101624 }, zoom = 8, height = 80, markerLayers = [], defaultLayer = "OpenStreetMap", instance }: Props = $props();
 
   async function onClick(event: any) {
     let markerSpec = event.popup._source.options.alt.replace(/\\"/g, '"');
@@ -37,7 +37,7 @@
 <div class="box-border border-4 p-4" style="height: {height}vh">
   <Map bind:instance options={{ center: [location.lat, location.lng], zoom: zoom }}>
     <ControlLayers>
-      <MapLayers {defautLayer} />
+      <MapLayers {defaultLayer} />
       <PoiMarkers {markerLayers} />
     </ControlLayers>
   </Map>

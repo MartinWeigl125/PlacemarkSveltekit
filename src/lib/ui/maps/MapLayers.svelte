@@ -2,10 +2,10 @@
   import { TileLayer } from "sveaflet";
 
   type Props = {
-    defautLayer: string;
+    defaultLayer: string;
   };
 
-  let { defautLayer = "OpenStreetMap" }: Props = $props();
+  let { defaultLayer = "OpenStreetMap" }: Props = $props();
 
   const tileLayers = [
     {
@@ -38,7 +38,7 @@
     }
   ];
   tileLayers.forEach((tile) => {
-    if (tile.name === defautLayer) {
+    if (tile.name === defaultLayer) {
       tile.checked = true;
     }
   });

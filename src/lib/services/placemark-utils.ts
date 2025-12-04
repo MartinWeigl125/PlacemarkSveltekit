@@ -1,5 +1,5 @@
 import { categories } from "$lib/stores";
-import type { Category, Comment, DataSet, MarkerLayer, MarkerSpec, Poi } from "$lib/types/placemark-types";
+import type { Category, Comment, DataSet, MarkerLayer, MarkerSpec, Poi, ScatterDataSet, UserPoi } from "$lib/types/placemark-types";
 import { get } from "svelte/store";
 
 // chart helper functions
@@ -40,6 +40,72 @@ export function generatePoisPerCategory(): DataSet {
   };
 
   return poisPerCategory;
+}
+
+export function generatePrivatePoisPerUser(users: UserPoi[]): DataSet {
+  const names = users.map(u => `${u.firstName} ${u.lastName}`);
+  const pois = new Array<number>(names.length).fill(0);
+  users.forEach((user, i) => {
+    pois[i] = user.poiCount
+  });
+
+  const privatePoisPerUser: DataSet = {
+    labels: names,
+    datasets: [
+      { values: pois }
+    ]
+  };
+
+  return privatePoisPerUser;
+}
+
+export function generateAvgRatingPerCategory(ratings: Comment[]): DataSet {
+  const allCategories = get(categories).filter(cat => cat.name.toLowerCase() !== "private points of interest");
+  const names = allCategories.map(cat => cat.name);
+  const values = new Array<number>(names.length).fill(0); 
+  allCategories.forEach((cat, i) => {
+    const commentsForCategory = ratings.filter(r => cat.pois.map(p => p._id).includes(r.poiid));
+    if (commentsForCategory.length > 0) {
+      const avg = commentsForCategory.reduce((sum, r) => sum + r.rating, 0) / commentsForCategory.length;
+      values[i] = avg;
+    } else {
+      values[i] = 0;
+    }
+  });
+
+  // order by values descending
+  const combined = names.map((label, i) => ({ label, value: values[i] }));
+  combined.sort((a, b) => b.value - a.value);
+
+  const avgRatingPerCategory: DataSet = {
+    labels: combined.map(e => e.label),
+    datasets: [
+      { values: combined.map(e => e.value) }
+    ]
+  };
+
+  return avgRatingPerCategory;
+}
+
+export function generateRatingCountAndAvgForPois(pois: Poi[], ratings: Comment[]): ScatterDataSet {
+  const values = pois.filter(p => p.userid == null).map(poi => {
+    const commentsForPoi = ratings.filter(r => r.poiid === poi._id);
+    const count = commentsForPoi.length;
+    let avg = 0;
+    if (count > 0) {
+      avg = commentsForPoi.reduce((sum, r) => sum + r.rating, 0) / count;
+    }
+
+    return { x: count, y: avg, label: poi.name };
+  });
+
+  const ratingCountAndAvgForPois: ScatterDataSet = {
+    datasets: [
+      { values }
+    ]
+  };
+
+  return ratingCountAndAvgForPois;
 }
 
 

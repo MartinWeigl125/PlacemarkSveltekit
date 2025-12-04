@@ -33,6 +33,7 @@ export interface Poi {
   categoryid: string;
   category: Category | string;
   user: User | string;
+  userid?: string;
   markerSpec: MarkerSpec;
 }
 
@@ -66,6 +67,16 @@ export interface UserPoi {
 export interface DataSet {
   labels: string[] | number[];
   datasets: [{ values: number[] }];
+}
+
+export interface ScatterPoint {
+  x: number;
+  y: number;
+  label?: string;
+}
+
+export interface ScatterDataSet {
+  datasets: [{ values: ScatterPoint[] }];
 }
 
 export interface MarkerSpec {

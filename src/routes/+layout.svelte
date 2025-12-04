@@ -1,5 +1,6 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+    import { goto } from "$app/navigation";
     import { placemarkService } from "$lib/services/placemark-service";
     import { loadCategories } from "$lib/services/placemark-utils";
   import { categories, currentSession } from "$lib/stores";
@@ -43,6 +44,7 @@
       return;
     }
     await loadCategories();
+    goto("/dashboard");
   }
 
   async function submitAdd(name: string, description: string, latitude: number, longitude: number, categoryId: string) {
@@ -62,6 +64,7 @@
     }
     await loadCategories();
     showAdd = false;
+    goto("/dashboard");
   }
 
   async function submitEdit(poiid: string, name: string, description: string, latitude: number, longitude: number, categoryId: string) {
@@ -82,6 +85,7 @@
     }
     await loadCategories();
     showEdit = false;
+    goto("/dashboard");
   }
 </script>
 

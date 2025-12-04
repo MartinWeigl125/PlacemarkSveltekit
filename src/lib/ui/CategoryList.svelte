@@ -1,16 +1,11 @@
 <script lang="ts">
-    import { placemarkService } from "$lib/services/placemark-service";
-    import { currentSession } from "$lib/stores";
-    import type { Category, Poi } from "$lib/types/placemark-types";
-    import { get } from "svelte/store";
+    import type { Category } from "$lib/types/placemark-types";
 
     export let categories: Category[] = [];
-    export let poisOfOpenCategory: Poi[]= [];
     let openIndex: number | null = null;
 
     async function toggle(i: number, categoryId: string) {
         openIndex = openIndex === i ? null : i;
-        poisOfOpenCategory = await placemarkService.getPoisByCategoryId(get(currentSession), categoryId);
     }
 </script>
 
@@ -27,7 +22,7 @@
             {#if openIndex === i}
                 <div class="mt-3 pl-4">
                     <ul>
-                        {#each poisOfOpenCategory as poi}
+                        {#each category.pois as poi}
                             <li>
                                 <a href="/poi/{poi._id}">
                                     {poi.name}

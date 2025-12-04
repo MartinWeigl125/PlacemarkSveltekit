@@ -1,4 +1,4 @@
-import type { Category, Comment, Poi, Session, User, UserPoi, WriteComment } from "$lib/types/placemark-types";
+import type { Category, Comment, Poi, PoiDTO, Session, User, UserPoi, WriteComment } from "$lib/types/placemark-types";
 import axios from "axios";
 
 export const placemarkService = {
@@ -42,6 +42,41 @@ export const placemarkService = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return [];
+        }
+    },
+
+    async createPoi(session: Session, poi: PoiDTO) {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.post(this.baseUrl + `/api/categories/${poi.categoryid}/pois`, poi);
+            return response.status == 201;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
+        }
+    },
+
+    async updatePoi(session: Session, poi: PoiDTO) {
+        try {
+            const poiid = poi._id;
+            poi._id = undefined;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.put(this.baseUrl + `/api/pois/${poiid}`, poi);
+            return response.status == 204;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
+        }
+    },
+
+    async deletePoi(session: Session, poiid: string) {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.delete(this.baseUrl + `/api/pois/${poiid}`);
+            return response.status == 204;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return false;
         }
     },
 

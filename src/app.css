@@ -1,0 +1,14 @@
+#modal{ z-index: index 5000; }
+
+.leaflet-container {
+  z-index: 1 !important;
+}
+
+.leaflet-pane,
+.leaflet-tile,
+.leaflet-marker-icon,
+.leaflet-marker-shadow,
+.leaflet-popup,
+.leaflet-control {
+  z-index: 1 !important;
+}

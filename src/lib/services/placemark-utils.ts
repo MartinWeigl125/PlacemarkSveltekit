@@ -1,6 +1,22 @@
-import { categories } from "$lib/stores";
+import { categories, currentSession, markerLayers } from "$lib/stores";
 import type { Category, Comment, DataSet, MarkerLayer, MarkerSpec, Poi, ScatterDataSet, UserPoi } from "$lib/types/placemark-types";
 import { get } from "svelte/store";
+import { placemarkService } from "./placemark-service";
+
+
+export async function loadCategories() {
+  const allCategories = await placemarkService.getCategories(get(currentSession));
+  allCategories.forEach((category) => {
+  category.pois.forEach((poi) => {
+    poi.markerSpec = generateMarkerSpec(poi);
+  });
+  category.markerLayer = generateMarkerLayer(category);
+  });
+  categories.set(allCategories);
+
+  const layers = allCategories.map(cat => cat.markerLayer);
+  markerLayers.set(layers);
+}
 
 // chart helper functions
 export function generatePerRating(commentList: Comment[]): DataSet {

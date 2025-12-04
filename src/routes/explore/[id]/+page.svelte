@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { sharedMarker, sharedPoi } from "$lib/stores";
+    import { markerLayers, sharedMarker, sharedPoi } from "$lib/stores";
     import Card from "$lib/ui/Card.svelte";
     import { onMount } from "svelte";
     import type { PageData } from "./$types";
@@ -32,7 +32,7 @@
     </div>
     <div class="column is-half">
       <div class="box">
-        <PlacemarkMap height={86} markerLayers={data.markerLayers} />
+        <PlacemarkMap height={86} markerLayers={$markerLayers} />
       </div>
     </div>
 

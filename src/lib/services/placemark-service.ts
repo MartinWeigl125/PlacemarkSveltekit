@@ -1,4 +1,4 @@
-import type { Category, Comment, Poi, Session, User, WriteComment } from "$lib/types/placemark-types";
+import type { Category, Comment, Poi, Session, User, UserPoi, WriteComment } from "$lib/types/placemark-types";
 import axios from "axios";
 
 export const placemarkService = {
@@ -121,6 +121,28 @@ export const placemarkService = {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return null;
+        }
+    },
+
+    async getComments(session: Session): Promise<Comment[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + `/api/comments`);
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
+        }
+    },
+
+    async getUsersWithPrivatePoiCount(session: Session): Promise<UserPoi[]> {
+        try {
+            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            const response = await axios.get(this.baseUrl + `/api/users/private`);
+            return response.data;
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        } catch (error) {
+            return [];
         }
     }
 }

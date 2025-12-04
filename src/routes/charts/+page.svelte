@@ -1,6 +1,16 @@
 <script lang="ts">
+    import { placemarkService } from "$lib/services/placemark-service";
+    import { currentSession } from "$lib/stores";
     import Card from "$lib/ui/Card.svelte";
+    import { onMount } from "svelte";
+    import { get } from "svelte/store";
 
+    onMount(async () => {
+        const pois = await placemarkService.getPois(get(currentSession));
+        // get users with private pois only fetches email + name + count of private pois => no sensitive data
+        const users = await placemarkService.getUsersWithPrivatePoiCount(get(currentSession));
+        const ratings = await placemarkService.getComments(get(currentSession));
+    });
 </script>
 
 <div class="container">

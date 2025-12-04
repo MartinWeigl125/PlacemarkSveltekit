@@ -55,6 +55,14 @@ export interface WriteComment {
   _id?: string;
 }
 
+export interface UserPoi {
+  firstName: string;
+  lastName: string;
+  email: string;
+  poiCount: number;
+  _id?: string;
+}
+
 export interface DataSet {
   labels: string[] | number[];
   datasets: [{ values: number[] }];

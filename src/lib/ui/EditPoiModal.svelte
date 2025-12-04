@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { Poi } from "$lib/types/placemark-types";
+    import PoiSelectMap from "./maps/PoiSelectMap.svelte";
 
   export let poi: Poi;
   export let onSubmit: Function;
@@ -9,6 +10,11 @@
   let description = poi.description;
   let latitude = poi.latitude;
   let longitude = poi.longitude;
+
+  function handleMapSelect(lat: number, lng: number) {
+    latitude = lat;
+    longitude = lng;
+  }
 </script>
 
 <h3 class="title is-4">Edit Point of Interest</h3>
@@ -31,18 +37,17 @@
 
 <div class="field">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label class="label">Latitude</label>
-  <div class="control">
-    <input class="input" type="number" bind:value={latitude} />
+  <label class="label">Latitude / Longitude</label>
+  <div class="control is-flex">
+    <input class="input mr-2" type="number" bind:value={latitude} step="0.000001" placeholder="Latitude" />
+    <input class="input" type="number" bind:value={longitude} step="0.000001" placeholder="Longitude" />
   </div>
 </div>
 
-<div class="field">
+<div class="field mt-3">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label class="label">Longitude</label>
-  <div class="control">
-    <input class="input" type="number" bind:value={longitude} />
-  </div>
+  <label class="label">Select on Map</label>
+  <PoiSelectMap {latitude} {longitude} onSelect={handleMapSelect} />
 </div>
 
 <div class="field is-grouped mt-3">

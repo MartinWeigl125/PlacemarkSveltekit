@@ -1,12 +1,19 @@
 <script lang="ts">
+    import PoiSelectMap from "./maps/PoiSelectMap.svelte";
+
   export let categoryId: string = "";
   export let onSubmit: Function;
   export let onCancel: Function;
 
   let name = "";
   let description = "";
-  let latitude = 0;
-  let longitude = 0;
+  let latitude = 49.013432;
+  let longitude = 12.101624;
+
+  function handleMapSelect(lat: number, lng: number) {
+    latitude = lat;
+    longitude = lng;
+  }
 </script>
 
 <h3 class="title is-4">Add Point of Interest</h3>
@@ -29,18 +36,17 @@
 
 <div class="field">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label class="label">Latitude</label>
-  <div class="control">
-    <input class="input" type="number" bind:value={latitude} />
+  <label class="label">Latitude / Longitude</label>
+  <div class="control is-flex">
+    <input class="input mr-2" type="number" bind:value={latitude} step="0.000001" placeholder="Latitude" />
+    <input class="input" type="number" bind:value={longitude} step="0.000001" placeholder="Longitude" />
   </div>
 </div>
 
-<div class="field">
+<div class="field mt-3">
   <!-- svelte-ignore a11y_label_has_associated_control -->
-  <label class="label">Longitude</label>
-  <div class="control">
-    <input class="input" type="number" bind:value={longitude} />
-  </div>
+  <label class="label">Select on Map</label>
+  <PoiSelectMap {latitude} {longitude} onSelect={handleMapSelect} />
 </div>
 
 <div class="field is-grouped mt-3">

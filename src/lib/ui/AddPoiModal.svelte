@@ -45,7 +45,7 @@
 
 <div class="field is-grouped mt-3">
   <div class="control">
-    <button class="button is-primary" on:click={() => onSubmit({ name, description, latitude, longitude, categoryId })}>
+    <button class="button is-primary" on:click={() => onSubmit(name, description, latitude, longitude, categoryId)}>
       Add
     </button>
   </div>

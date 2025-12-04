@@ -37,6 +37,16 @@ export interface Poi {
   markerSpec: MarkerSpec;
 }
 
+export interface PoiDTO {
+  name: string;
+  description: string;
+  latitude: number;
+  longitude: number;
+  categoryid: string | undefined;
+  userid?: string;
+  _id?: string;
+}
+
 export interface Comment {
   comment: string;
   rating: number;

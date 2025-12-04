@@ -1,13 +1,16 @@
 <script lang="ts">
   import { browser } from "$app/environment";
+    import { placemarkService } from "$lib/services/placemark-service";
+    import { loadCategories } from "$lib/services/placemark-utils";
   import { categories, currentSession } from "$lib/stores";
-  import type { Poi } from "$lib/types/placemark-types";
+  import type { Poi, PoiDTO } from "$lib/types/placemark-types";
   import AddPoiModal from "$lib/ui/AddPoiModal.svelte";
   import Card from "$lib/ui/Card.svelte";
   import CategoryList from "$lib/ui/CategoryList.svelte";
   import EditPoiModal from "$lib/ui/EditPoiModal.svelte";
   import Menu from "$lib/ui/Menu.svelte";
   import Modal from "$lib/ui/Modal.svelte";
+    import { get } from "svelte/store";
 
   if (browser) {
     const savedSession = localStorage.donation;
@@ -34,15 +37,51 @@
   }
 
   async function handleDelete(poiId: string) {
-    // call delete endpoint
+    const success = await placemarkService.deletePoi(get(currentSession), poiId);
+    if (!success) {
+      alert("Deleting POI failed");
+      return;
+    }
+    await loadCategories();
   }
 
-  async function submitAdd() {
-    // call add endpoint
+  async function submitAdd(name: string, description: string, latitude: number, longitude: number, categoryId: string) {
+    const poi: PoiDTO = {
+      name: name,
+      description: description,
+      latitude: latitude,
+      longitude: longitude,
+      categoryid: categoryId,
+      userid: get(currentSession)._id
+    };
+    const success = await placemarkService.createPoi(get(currentSession), poi);
+    if (!success) {
+      alert("Adding POI failed");
+      showAdd = false;
+      return;
+    }
+    await loadCategories();
+    showAdd = false;
   }
 
-  async function submitEdit() {
-    // call edit endpoint
+  async function submitEdit(poiid: string, name: string, description: string, latitude: number, longitude: number, categoryId: string) {
+    const poi: PoiDTO = {
+      name: name,
+      description: description,
+      latitude: latitude,
+      longitude: longitude,
+      categoryid: categoryId,
+      userid: get(currentSession)._id,
+      _id: poiid
+    };
+    const success = await placemarkService.updatePoi(get(currentSession), poi);
+    if (!success) {
+      alert("Updating POI failed");
+      showEdit = false;
+      return;
+    }
+    await loadCategories();
+    showEdit = false;
   }
 </script>
 

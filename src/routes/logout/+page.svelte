@@ -3,6 +3,6 @@
   import { currentSession } from "$lib/stores";
 
   currentSession.set({ firstName: "", lastName: "", _id: "", token: "" });
-  localStorage.removeItem("donation");
+  localStorage.removeItem("placemark");
   goto("/");
 </script>

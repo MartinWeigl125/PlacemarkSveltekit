@@ -10,6 +10,6 @@
     });
 </script>
 
-<Card title="Points of Interest in Bavaria">
-    <PlacemarkMap height={80} markerLayers={$markerLayers} /> <!-- code shows error, but there is no error -->
+<Card title="Football stadiums in Germany">
+    <PlacemarkMap height={80} markerLayers={$markerLayers} />
 </Card>

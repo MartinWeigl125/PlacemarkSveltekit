@@ -16,7 +16,7 @@
     instance?: any;
   };
 
-  let { location = { lat: 49.013432, lng: 12.101624 }, zoom = 8, height = 80, markerLayers = [], defaultLayer = "OpenStreetMap", instance }: Props = $props();
+  let { location = { lat: 51.1635, lng: 10.4477 }, zoom = 6.5, height = 80, markerLayers = [], defaultLayer = "OpenStreetMap", instance }: Props = $props();
 
   async function onClick(event: any) {
     let markerSpec = event.popup._source.options.alt.replace(/\\"/g, '"');

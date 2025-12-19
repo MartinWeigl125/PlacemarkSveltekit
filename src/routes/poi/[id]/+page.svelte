@@ -8,10 +8,10 @@
   import { onMount } from "svelte";
   import type { PageData } from "./$types";
   import { placemarkService } from "$lib/services/placemark-service";
-  import { get } from "svelte/store";
   import RatingForm from "$lib/ui/RatingForm.svelte";
   import { generatePerRating } from "$lib/services/placemark-utils";
   import { afterNavigate } from "$app/navigation";
+  import { loggedInUser } from "$lib/types/runes.svelte";
 
   export let data: PageData;
 
@@ -20,8 +20,8 @@
 
   async function loadComments() {
     comments = await placemarkService.getCommentsByPoiId(
-      get(currentSession),
-      encodeURI(data.poi._id!)
+      loggedInUser.token,
+      encodeURI(data.poi?._id!)
     );
     ratingsPerComment = generatePerRating(comments);
   }
@@ -35,7 +35,7 @@
   });
 
   latestComment.subscribe(comment => {
-    if (comment && comment.poiid === data.poi._id) {
+    if (comment && comment.poiid === data.poi?._id) {
       comments = [...comments, comment];
       ratingsPerComment = generatePerRating(comments);
     }
@@ -45,20 +45,20 @@
 <div class="container">
   <div class="columns">
     <div class="column is-two-thirds">
-      <ImageBox poi={data.poi} />
+      <ImageBox poi={data.poi!} />
     </div>
     <div class="column is-one-third">
       <div class="box" style="height: 60vh; overflow-y: auto">
         <Chart data={ratingsPerComment} type="bar" height={150} />
         <RatingBox comments={comments} />
-        <RatingForm poi={data.poi} />
+        <RatingForm poi={data.poi!} />
       </div>
     </div>
   </div>
 
   <div class="columns">
     <div class="column">
-      <DetailBox poi={data.poi} />
+      <DetailBox poi={data.poi!} />
     </div>
   </div>
 </div>

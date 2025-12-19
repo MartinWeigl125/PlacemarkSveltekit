@@ -2,6 +2,7 @@ import { categories, currentSession, markerLayers } from "$lib/stores";
 import type { Category, Comment, DataSet, MarkerLayer, MarkerSpec, Poi, ScatterDataSet, UserPoi } from "$lib/types/placemark-types";
 import { get } from "svelte/store";
 import { placemarkService } from "./placemark-service";
+import { currentCategories, currentDataSets, loggedInUser } from "$lib/types/runes.svelte";
 
 
 export async function loadCategories() {
@@ -16,6 +17,22 @@ export async function loadCategories() {
 
   const layers = allCategories.map(cat => cat.markerLayer);
   markerLayers.set(layers);
+}
+
+export function clearPlacemarkState() {
+  loggedInUser.email = "";
+  loggedInUser.firstName = "";
+  loggedInUser.lastName = "";
+  loggedInUser.token = "";
+  loggedInUser._id = "";
+}
+
+export async function refreshPlacemarkState(categories: Category[], pois: Poi[], users: UserPoi[], ratings: Comment[]) {
+  currentCategories.categories = categories;
+  generatePoisPerCategory();
+  generatePrivatePoisPerUser(users);
+  generateAvgRatingPerCategory(ratings);
+  generateRatingCountAndAvgForPois(pois, ratings);
 }
 
 // chart helper functions
@@ -36,8 +53,8 @@ export function generatePerRating(commentList: Comment[]): DataSet {
   return totalByRating;
 }
 
-export function generatePoisPerCategory(): DataSet {
-  const allCategories = get(categories).filter(cat => cat.name.toLowerCase() !== "private points of interest");
+export function generatePoisPerCategory() {
+  const allCategories = currentCategories.categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
   const names = allCategories.map(cat => cat.name);
   const values = new Array<number>(names.length).fill(0);
   allCategories.forEach((cat, i) => {
@@ -55,10 +72,10 @@ export function generatePoisPerCategory(): DataSet {
     ]
   };
 
-  return poisPerCategory;
+  currentDataSets.poisPerCategory = poisPerCategory;
 }
 
-export function generatePrivatePoisPerUser(users: UserPoi[]): DataSet {
+export function generatePrivatePoisPerUser(users: UserPoi[]) {
   const names = users.map(u => `${u.firstName} ${u.lastName}`);
   const pois = new Array<number>(names.length).fill(0);
   users.forEach((user, i) => {
@@ -72,11 +89,11 @@ export function generatePrivatePoisPerUser(users: UserPoi[]): DataSet {
     ]
   };
 
-  return privatePoisPerUser;
+  currentDataSets.usersWithMostPrivatePois = privatePoisPerUser;
 }
 
-export function generateAvgRatingPerCategory(ratings: Comment[]): DataSet {
-  const allCategories = get(categories).filter(cat => cat.name.toLowerCase() !== "private points of interest");
+export function generateAvgRatingPerCategory(ratings: Comment[]) {
+  const allCategories = currentCategories.categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
   const names = allCategories.map(cat => cat.name);
   const values = new Array<number>(names.length).fill(0); 
   allCategories.forEach((cat, i) => {
@@ -100,10 +117,10 @@ export function generateAvgRatingPerCategory(ratings: Comment[]): DataSet {
     ]
   };
 
-  return avgRatingPerCategory;
+  currentDataSets.bestCategories = avgRatingPerCategory;
 }
 
-export function generateRatingCountAndAvgForPois(pois: Poi[], ratings: Comment[]): ScatterDataSet {
+export function generateRatingCountAndAvgForPois(pois: Poi[], ratings: Comment[]) {
   const values = pois.filter(p => p.userid == null).map(poi => {
     const commentsForPoi = ratings.filter(r => r.poiid === poi._id);
     const count = commentsForPoi.length;
@@ -121,7 +138,7 @@ export function generateRatingCountAndAvgForPois(pois: Poi[], ratings: Comment[]
     ]
   };
 
-  return ratingCountAndAvgForPois;
+  currentDataSets.bestPois = ratingCountAndAvgForPois;
 }
 
 

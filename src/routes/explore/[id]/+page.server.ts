@@ -4,6 +4,7 @@ import { generateMarkerSpec } from "$lib/services/placemark-utils";
 import type { PageServerLoad } from "./$types";
 import { currentCategories } from "$lib/types/runes.svelte";
 
+// have to do this, otherwise you get window is not defined after refreshing the page
 export const ssr = false;
 
 export const load: PageServerLoad = async ({ parent, params }) => {

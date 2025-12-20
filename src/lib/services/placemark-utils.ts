@@ -1,23 +1,6 @@
-import { categories, currentSession, markerLayers } from "$lib/stores";
 import type { Category, Comment, DataSet, MarkerLayer, MarkerSpec, Poi, ScatterDataSet, UserPoi } from "$lib/types/placemark-types";
-import { get } from "svelte/store";
-import { placemarkService } from "./placemark-service";
-import { currentCategories, currentDataSets, loggedInUser } from "$lib/types/runes.svelte";
+import { currentCategories, currentComments, currentDataSets, currentPois, currentUsers, loggedInUser } from "$lib/types/runes.svelte";
 
-
-export async function loadCategories() {
-  const allCategories = await placemarkService.getCategories(get(currentSession));
-  allCategories.forEach((category) => {
-  category.pois.forEach((poi) => {
-    poi.markerSpec = generateMarkerSpec(poi);
-  });
-  category.markerLayer = generateMarkerLayer(category);
-  });
-  categories.set(allCategories);
-
-  const layers = allCategories.map(cat => cat.markerLayer);
-  markerLayers.set(layers);
-}
 
 export function clearPlacemarkState() {
   loggedInUser.email = "";
@@ -25,10 +8,22 @@ export function clearPlacemarkState() {
   loggedInUser.lastName = "";
   loggedInUser.token = "";
   loggedInUser._id = "";
+
+  currentCategories.categories = [];
+  currentPois.pois = [];
+  currentUsers.users = [];
+  currentComments.comments = [];
+  currentDataSets.poisPerCategory = {} as DataSet;
+  currentDataSets.usersWithMostPrivatePois = {} as DataSet;
+  currentDataSets.bestCategories = {} as DataSet;
+  currentDataSets.bestPois = {} as ScatterDataSet;
 }
 
-export async function refreshPlacemarkState(categories: Category[], pois: Poi[], users: UserPoi[], ratings: Comment[]) {
+export function refreshPlacemarkState(categories: Category[], pois: Poi[], users: UserPoi[], ratings: Comment[]) {
   currentCategories.categories = categories;
+  currentPois.pois = pois;
+  currentUsers.users = users;
+  currentComments.comments = ratings;
   if (categories) {
     generatePoisPerCategory(categories);
   }

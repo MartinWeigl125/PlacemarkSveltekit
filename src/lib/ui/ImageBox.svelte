@@ -1,15 +1,14 @@
 <script lang="ts">
     import { placemarkService } from "$lib/services/placemark-service";
-    import { currentSession } from "$lib/stores";
     import type { Poi } from "$lib/types/placemark-types";
-    import { get } from "svelte/store";
+    import { loggedInUser } from "$lib/types/runes.svelte";
 
     export let poi: Poi;
 
     let currentIndex = 0;
 
     async function deleteImage() {
-        const success = await placemarkService.deleteImage(get(currentSession), poi._id!,poi.img[currentIndex]);
+        const success = await placemarkService.deleteImage(loggedInUser.token, poi._id!,poi.img[currentIndex]);
         if (!success) {
             alert("Error deleting image");
             return;
@@ -28,7 +27,7 @@
             return;
         }
 
-        const updatedPoi = await placemarkService.uploadImage(get(currentSession), poi._id!, file);
+        const updatedPoi = await placemarkService.uploadImage(loggedInUser.token, poi._id!, file);
         if (!updatedPoi) {
             alert("Error uploading image");
             return;

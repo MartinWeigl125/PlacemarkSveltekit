@@ -3,7 +3,7 @@
   import { ControlLayers, Map } from "sveaflet";
   import type { MarkerLayer } from "$lib/types/placemark-types";
   import PoiMarkers from "./PoiMarkers.svelte";
-  import { sharedMarker, sharedPoi } from "$lib/stores";
+  import { sharedMarker, sharedPoi } from "$lib/types/runes.svelte";
   import { placemarkService } from "$lib/services/placemark-service"
   import { loggedInUser } from "$lib/types/runes.svelte";
 

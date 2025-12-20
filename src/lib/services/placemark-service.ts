@@ -123,7 +123,7 @@ export const placemarkService = {
         try {
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + "/api/comments", comment);
-            return response.status == 201;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;

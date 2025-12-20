@@ -1,7 +1,7 @@
 <script lang="ts">
   import { goto } from "$app/navigation";
   import { placemarkService } from "$lib/services/placemark-service";
-  import { loadCategories, refreshPlacemarkState } from "$lib/services/placemark-utils";
+  import { refreshPlacemarkState } from "$lib/services/placemark-utils";
   import type { Poi, PoiDTO } from "$lib/types/placemark-types";
   import { loggedInUser } from "$lib/types/runes.svelte";
   import AddPoiModal from "$lib/ui/AddPoiModal.svelte";

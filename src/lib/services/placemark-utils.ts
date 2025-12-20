@@ -29,10 +29,18 @@ export function clearPlacemarkState() {
 
 export async function refreshPlacemarkState(categories: Category[], pois: Poi[], users: UserPoi[], ratings: Comment[]) {
   currentCategories.categories = categories;
-  generatePoisPerCategory();
-  generatePrivatePoisPerUser(users);
-  generateAvgRatingPerCategory(ratings);
-  generateRatingCountAndAvgForPois(pois, ratings);
+  if (categories) {
+    generatePoisPerCategory(categories);
+  }
+  if (users) {
+    generatePrivatePoisPerUser(users);
+  }
+  if (ratings) {
+    generateAvgRatingPerCategory(ratings);
+    if (pois) {
+      generateRatingCountAndAvgForPois(pois, ratings);
+    }
+  }
 }
 
 // chart helper functions
@@ -53,8 +61,8 @@ export function generatePerRating(commentList: Comment[]): DataSet {
   return totalByRating;
 }
 
-export function generatePoisPerCategory() {
-  const allCategories = currentCategories.categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
+export function generatePoisPerCategory(categories: Category[]) {
+  const allCategories = categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
   const names = allCategories.map(cat => cat.name);
   const values = new Array<number>(names.length).fill(0);
   allCategories.forEach((cat, i) => {

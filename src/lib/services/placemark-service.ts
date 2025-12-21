@@ -49,7 +49,7 @@ export const placemarkService = {
         try {
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + `/api/categories/${poi.categoryid}/pois`, poi);
-            return response.status == 201;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;
@@ -62,7 +62,7 @@ export const placemarkService = {
             poi._id = undefined;
             axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.put(this.baseUrl + `/api/pois/${poiid}`, poi);
-            return response.status == 204;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;

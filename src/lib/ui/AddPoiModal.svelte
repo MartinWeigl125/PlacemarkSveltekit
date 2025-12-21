@@ -1,5 +1,5 @@
 <script lang="ts">
-    import PoiSelectMap from "./maps/PoiSelectMap.svelte";
+  import PoiSelectMap from "./maps/PoiSelectMap.svelte";
 
   export let categoryId: string = "";
   export let onSubmit: Function;
@@ -9,6 +9,7 @@
   let description = "";
   let latitude = 49.013432;
   let longitude = 12.101624;
+  let nameError = "";
 
   function handleMapSelect(lat: number, lng: number) {
     latitude = lat;
@@ -23,6 +24,9 @@
   <label class="label">Name</label>
   <div class="control">
     <input class="input" type="text" bind:value={name} />
+    {#if nameError}
+      <p class="help is-danger">{nameError}</p>
+    {/if}
   </div>
 </div>
 
@@ -51,7 +55,14 @@
 
 <div class="field is-grouped mt-3">
   <div class="control">
-    <button class="button is-primary" on:click={() => onSubmit(name, description, latitude, longitude, categoryId)}>
+    <button class="button is-primary" on:click={() => {
+      if (!name.trim()) {
+        nameError = "Name is required";
+        return;
+      }
+      nameError = "";
+      onSubmit(name, description, latitude, longitude, categoryId);
+    }}>
       Add
     </button>
   </div>

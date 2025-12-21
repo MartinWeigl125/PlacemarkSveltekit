@@ -34,9 +34,9 @@ export const placemarkService = {
         }
     },
 
-    async getPois(session: Session): Promise<Poi[]> {
+    async getPois(token: string): Promise<Poi[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + "/api/pois");
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -45,33 +45,33 @@ export const placemarkService = {
         }
     },
 
-    async createPoi(session: Session, poi: PoiDTO) {
+    async createPoi(token: string, poi: PoiDTO) {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + `/api/categories/${poi.categoryid}/pois`, poi);
-            return response.status == 201;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;
         }
     },
 
-    async updatePoi(session: Session, poi: PoiDTO) {
+    async updatePoi(token: string, poi: PoiDTO) {
         try {
             const poiid = poi._id;
             poi._id = undefined;
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.put(this.baseUrl + `/api/pois/${poiid}`, poi);
-            return response.status == 204;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;
         }
     },
 
-    async deletePoi(session: Session, poiid: string) {
+    async deletePoi(token: string, poiid: string) {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.delete(this.baseUrl + `/api/pois/${poiid}`);
             return response.status == 204;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -80,9 +80,9 @@ export const placemarkService = {
         }
     },
 
-    async getCategories(session: Session): Promise<Category[]> {
+    async getCategories(token: string): Promise<Category[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + "/api/categories");
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -91,9 +91,9 @@ export const placemarkService = {
         }
     },
 
-    async getPoisByCategoryId(session: Session, categoryId: string): Promise<Poi[]> {
+    async getPoisByCategoryId(token: string, categoryId: string): Promise<Poi[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + `/api/categories/${categoryId}/pois`);
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -102,15 +102,15 @@ export const placemarkService = {
         }
     },
 
-    async getPoiById(session: Session, poiId: string): Promise<Poi> {
-        axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+    async getPoiById(token: string, poiId: string): Promise<Poi> {
+        axios.defaults.headers.common["Authorization"] = "Bearer " + token;
         const response = await axios.get(this.baseUrl + `/api/pois/${poiId}`);
         return response.data;
     },
 
-    async getCommentsByPoiId(session: Session, poiId: string): Promise<Comment[]> {
+    async getCommentsByPoiId(token: string, poiId: string): Promise<Comment[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + `/api/pois/${poiId}/comments`);
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -119,20 +119,20 @@ export const placemarkService = {
         }
     },
 
-    async writeComment(session: Session, comment: WriteComment) {
+    async writeComment(token: string, comment: WriteComment) {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + "/api/comments", comment);
-            return response.status == 201;
+            return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             return false;
         }
     },
 
-    async deleteImage(session: Session, poiId: string, imgUrl: string) {
+    async deleteImage(token: string, poiId: string, imgUrl: string) {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + `/api/pois/${poiId}/images/delete`, { img: imgUrl });
             return response.status == 204;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -141,14 +141,14 @@ export const placemarkService = {
         }
     },
 
-    async uploadImage(session: Session, poiId: string, file: File | null) {
+    async uploadImage(token: string, poiId: string, file: File | null) {
         try {
             const formData = new FormData();
             formData.append("file", file!);
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.post(this.baseUrl + `/api/pois/${poiId}/images/upload`, formData, {
                 headers: {
-                    "Authorization": "Bearer " + session.token,
+                    "Authorization": "Bearer " + token,
                     "Content-Type": "multipart/form-data" 
                 }
             });
@@ -159,9 +159,9 @@ export const placemarkService = {
         }
     },
 
-    async getComments(session: Session): Promise<Comment[]> {
+    async getComments(token: string): Promise<Comment[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + `/api/comments`);
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -170,9 +170,9 @@ export const placemarkService = {
         }
     },
 
-    async getUsersWithPrivatePoiCount(session: Session): Promise<UserPoi[]> {
+    async getUsersWithPrivatePoiCount(token: string): Promise<UserPoi[]> {
         try {
-            axios.defaults.headers.common["Authorization"] = "Bearer " + session.token;
+            axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             const response = await axios.get(this.baseUrl + `/api/users/private`);
             return response.data;
         // eslint-disable-next-line @typescript-eslint/no-unused-vars

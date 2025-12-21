@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { currentSession } from "$lib/stores";
+  import { loggedInUser } from "$lib/types/runes.svelte";
 </script>
 
 <nav class="navbar is-full-width">
@@ -17,7 +17,7 @@
   <div id="navbarMenu" class="navbar-menu">
     <div class="navbar-end">
       <a class="navbar-item" href="/charts"> Statistics</a>
-      <a class="navbar-item" href="/logout"> Logout [{$currentSession.firstName} {$currentSession.lastName}]</a>
+      <a data-sveltekit-preload-data="tap" class="navbar-item" href="/logout"> Logout [{loggedInUser.firstName} {loggedInUser.lastName}]</a>
     </div>
     <div></div>
   </div>

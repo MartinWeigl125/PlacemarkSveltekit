@@ -1,24 +1,30 @@
 <script lang="ts">
-  import { browser } from "$app/environment";
-    import { goto } from "$app/navigation";
-    import { placemarkService } from "$lib/services/placemark-service";
-    import { loadCategories } from "$lib/services/placemark-utils";
-  import { categories, currentSession } from "$lib/stores";
-  import type { Poi, PoiDTO } from "$lib/types/placemark-types";
+  import { goto } from "$app/navigation";
+  import { refreshPlacemarkState } from "$lib/services/placemark-utils";
+  import type { Poi } from "$lib/types/placemark-types";
+  import { loggedInUser } from "$lib/types/runes.svelte";
   import AddPoiModal from "$lib/ui/AddPoiModal.svelte";
   import Card from "$lib/ui/Card.svelte";
   import CategoryList from "$lib/ui/CategoryList.svelte";
   import EditPoiModal from "$lib/ui/EditPoiModal.svelte";
   import Menu from "$lib/ui/Menu.svelte";
   import Modal from "$lib/ui/Modal.svelte";
-    import { get } from "svelte/store";
+  import { get } from "svelte/store";
+  import { page } from "$app/stores";
 
-  if (browser) {
-    const savedSession = localStorage.donation;
-    if (savedSession) {
-      const session = JSON.parse(savedSession);
-      currentSession.set(session);
-    }
+  export let data: any;
+  $: if (data && data.session) {
+    loggedInUser.email = data.session.email;
+    loggedInUser.firstName = data.session.firstName;
+    loggedInUser.lastName = data.session.lastName;
+    loggedInUser.token = data.session.token;
+    loggedInUser._id = data.session._id;
+  } else {
+    loggedInUser.email = "";
+    loggedInUser.firstName = "";
+    loggedInUser.lastName = "";
+    loggedInUser.token = "";
+    loggedInUser._id = "";
   }
 
   let showAdd = false;
@@ -26,6 +32,8 @@
 
   let currentCategoryId: string | undefined = undefined;
   let currentPoi: Poi;
+
+  refreshPlacemarkState(data.categories, data.pois, data.users, data.ratings);
 
   function handleAdd(categoryId: string) {
     currentCategoryId = categoryId;
@@ -38,59 +46,53 @@
   }
 
   async function handleDelete(poiId: string) {
-    const success = await placemarkService.deletePoi(get(currentSession), poiId);
-    if (!success) {
+    const response = await fetch(`/api/poi/${poiId}`, { method: "DELETE" });
+    if (!response.ok) {
       alert("Deleting POI failed");
       return;
     }
-    await loadCategories();
-    goto("/dashboard");
+    const currentPath = get(page).url.pathname;
+    if (currentPath === `/poi/${poiId}` || currentPath === `/explore/${poiId}`) {
+      await goto("/dashboard");
+    }
+    location.reload();
   }
 
   async function submitAdd(name: string, description: string, latitude: number, longitude: number, categoryId: string) {
-    const poi: PoiDTO = {
-      name: name,
-      description: description,
-      latitude: latitude,
-      longitude: longitude,
-      categoryid: categoryId,
-      userid: get(currentSession)._id
-    };
-    const success = await placemarkService.createPoi(get(currentSession), poi);
-    if (!success) {
+    const res = await fetch("/api/poi", {
+      method: "POST",
+      body: JSON.stringify({ name, description, latitude, longitude, categoryId }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (!res.ok) {
       alert("Adding POI failed");
-      showAdd = false;
       return;
     }
-    await loadCategories();
+
     showAdd = false;
-    goto("/dashboard");
+    location.reload();
   }
 
   async function submitEdit(poiid: string, name: string, description: string, latitude: number, longitude: number, categoryId: string) {
-    const poi: PoiDTO = {
-      name: name,
-      description: description,
-      latitude: latitude,
-      longitude: longitude,
-      categoryid: categoryId,
-      userid: get(currentSession)._id,
-      _id: poiid
-    };
-    const success = await placemarkService.updatePoi(get(currentSession), poi);
-    if (!success) {
+    const res = await fetch(`/api/poi/${poiid}`, {
+      method: "PUT",
+      body: JSON.stringify({ name, description, latitude, longitude, categoryId }),
+      headers: { "Content-Type": "application/json" }
+    });
+
+    if (!res.ok) {
       alert("Updating POI failed");
-      showEdit = false;
       return;
     }
-    await loadCategories();
+
     showEdit = false;
-    goto("/dashboard");
+    location.reload();
   }
 </script>
 
 <div class="px-5">
-  {#if $currentSession?.token}
+  {#if loggedInUser.token}
     <Menu />
     <div class="columns">
       <div class="column is-three-quarters">
@@ -98,7 +100,7 @@
       </div>
       <div class="column is-one-quarter">
         <Card title="Categories of Points of Interest">
-          <CategoryList categories={$categories} onAdd={handleAdd} onEdit={handleEdit} onDelete={handleDelete} />
+          <CategoryList categories={data.categories} onAdd={handleAdd} onEdit={handleEdit} onDelete={handleDelete} />
         </Card>
       </div>
     </div>

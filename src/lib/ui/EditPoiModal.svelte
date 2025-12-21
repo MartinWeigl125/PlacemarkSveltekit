@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Poi } from "$lib/types/placemark-types";
-    import PoiSelectMap from "./maps/PoiSelectMap.svelte";
+  import PoiSelectMap from "./maps/PoiSelectMap.svelte";
 
   export let poi: Poi;
   export let onSubmit: Function;
@@ -10,6 +10,7 @@
   let description = poi.description;
   let latitude = poi.latitude;
   let longitude = poi.longitude;
+  let nameError = "";
 
   function handleMapSelect(lat: number, lng: number) {
     latitude = lat;
@@ -24,6 +25,9 @@
   <label class="label">Name</label>
   <div class="control">
     <input class="input" type="text" bind:value={name} />
+    {#if nameError}
+      <p class="help is-danger">{nameError}</p>
+    {/if}
   </div>
 </div>
 
@@ -52,7 +56,14 @@
 
 <div class="field is-grouped mt-3">
   <div class="control">
-    <button class="button is-primary" on:click={() => onSubmit(poi._id, name, description, latitude, longitude, poi.categoryid)}>
+    <button class="button is-primary" on:click={() => {
+      if (!name.trim()) {
+        nameError = "Name is required";
+        return;
+      }
+      nameError = "";
+      onSubmit(poi._id, name, description, latitude, longitude, poi.categoryid)
+    }}>
       Save
     </button>
   </div>

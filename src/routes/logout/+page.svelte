@@ -1,8 +1,10 @@
 <script lang="ts">
+  import { browser } from "$app/environment";
   import { goto } from "$app/navigation";
-  import { currentSession } from "$lib/stores";
+  import { clearPlacemarkState } from "$lib/services/placemark-utils";
 
-  currentSession.set({ firstName: "", lastName: "", _id: "", token: "" });
-  localStorage.removeItem("placemark");
-  goto("/");
+  clearPlacemarkState();
+  if (browser) {
+    goto("/");
+  }
 </script>

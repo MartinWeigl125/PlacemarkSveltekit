@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { sharedMarker } from "$lib/stores";
+  import { sharedMarker } from "$lib/types/runes.svelte";
   import { ControlLayers, Map, Marker } from "sveaflet";
   import MapLayers from "./MapLayers.svelte";
   import L from "leaflet";

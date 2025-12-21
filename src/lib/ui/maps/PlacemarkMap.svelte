@@ -3,9 +3,9 @@
   import { ControlLayers, Map } from "sveaflet";
   import type { MarkerLayer } from "$lib/types/placemark-types";
   import PoiMarkers from "./PoiMarkers.svelte";
-  import { currentSession, sharedMarker, sharedPoi } from "$lib/stores";
+  import { sharedMarker, sharedPoi } from "$lib/types/runes.svelte";
   import { placemarkService } from "$lib/services/placemark-service"
-  import { get } from "svelte/store";
+  import { loggedInUser } from "$lib/types/runes.svelte";
 
   type Props = {
     location?: any;
@@ -22,7 +22,7 @@
     let markerSpec = event.popup._source.options.alt.replace(/\\"/g, '"');
     markerSpec = JSON.parse(markerSpec);
     sharedMarker.value = markerSpec;
-    let poi = await placemarkService.getPoiById(get(currentSession), markerSpec.id);
+    let poi = await placemarkService.getPoiById(loggedInUser.token, markerSpec.id);
     sharedPoi.value = poi;
   }
 

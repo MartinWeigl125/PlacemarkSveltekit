@@ -1,8 +1,9 @@
+import { PUBLIC_BACKEND_URL } from "$env/static/public";
 import type { Category, Comment, Poi, PoiDTO, Session, User, UserPoi, WriteComment } from "$lib/types/placemark-types";
 import axios from "axios";
 
 export const placemarkService = {
-    baseUrl: "http://localhost:3000",
+    baseUrl: PUBLIC_BACKEND_URL,
 
     async signup(user: User): Promise<boolean> {
         try {

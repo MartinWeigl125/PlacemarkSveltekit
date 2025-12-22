@@ -1,0 +1,44 @@
+<script lang="ts">
+  import MapLayers from "./MapLayers.svelte";
+  import { ControlLayers, Map } from "sveaflet";
+  import type { MarkerLayer } from "$lib/types/placemark-types";
+  import PoiMarkers from "./PoiMarkers.svelte";
+  import { sharedMarker, sharedPoi } from "$lib/types/runes.svelte";
+  import { placemarkService } from "$lib/services/placemark-service"
+  import { loggedInUser } from "$lib/types/runes.svelte";
+
+  type Props = {
+    location?: any;
+    zoom?: number;
+    height?: number;
+    markerLayers?: MarkerLayer[];
+    defaultLayer?: string;
+    instance?: any;
+  };
+
+  let { location = { lat: 51.1635, lng: 10.4477 }, zoom = 6.5, height = 80, markerLayers = [], defaultLayer = "OpenStreetMap", instance }: Props = $props();
+
+  async function onClick(event: any) {
+    let markerSpec = event.popup._source.options.alt.replace(/\\"/g, '"');
+    markerSpec = JSON.parse(markerSpec);
+    sharedMarker.value = markerSpec;
+    let poi = await placemarkService.getPoiById(loggedInUser.token, markerSpec.id);
+    sharedPoi.value = poi;
+  }
+
+  $effect(() => {
+    if (instance) {
+      instance.on("popupopen", onClick);
+      instance.flyTo(location, zoom);
+    }
+  });
+</script>
+
+<div class="box-border border-4 p-4" style="height: {height}vh">
+  <Map bind:instance options={{ center: [location.lat, location.lng], zoom: zoom }}>
+    <ControlLayers>
+      <MapLayers {defaultLayer} />
+      <PoiMarkers {markerLayers} />
+    </ControlLayers>
+  </Map>
+</div>

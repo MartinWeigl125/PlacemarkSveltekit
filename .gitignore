@@ -13,7 +13,7 @@ node_modules
 Thumbs.db
 
 # Env
-.env
+# .env # contains no sensitive information, only URL: can be published
 .env.*
 !.env.example
 !.env.test

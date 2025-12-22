@@ -5,6 +5,10 @@ The application is built using [SvelteKit](https://sveltekit.dev/), [Leaflet](ht
 
 - TODO: public URL here
 
+It requires a connection to a backend API. This API is available on:
+- https://placemarkapi.onrender.com
+- https://github.com/MartinWeigl125/PlacemarkCore/releases/tag/v3.0.0
+
 This is the second part of the assignment in the module Advanced Full Stack Development. It is about implementing a Point Of Interest application with the frontend framework SvelteKit.
 
 The application shows all football stadiums of the first 3 divisions in Germany on a Leaflet map. They are grouped in categories by the capacity of the stadium. There is also a detail page where you can see images, information and ratings for a specific stadium. On antoher page, you can see the stadium on different maps on one page. Furthermore, there is a statistics page using different charts.

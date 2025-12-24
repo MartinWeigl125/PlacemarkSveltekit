@@ -20,20 +20,21 @@ export function clearPlacemarkState() {
 }
 
 export function refreshPlacemarkState(categories: Category[], pois: Poi[], users: UserPoi[], ratings: Comment[]) {
-  currentCategories.categories = categories;
-  currentPois.pois = pois;
-  currentUsers.users = users;
-  currentComments.comments = ratings;
-  if (categories) {
-    generatePoisPerCategory(categories);
+  currentCategories.categories = categories || [];
+  currentPois.pois = pois || [];
+  currentUsers.users = users || [];
+  currentComments.comments = ratings || [];
+
+  if ((categories || []).length > 0) {
+    generatePoisPerCategory(categories || []);
   }
-  if (users) {
-    generatePrivatePoisPerUser(users);
+  if ((users || []).length > 0) {
+    generatePrivatePoisPerUser(users || []);
   }
-  if (ratings) {
-    generateAvgRatingPerCategory(ratings);
-    if (pois) {
-      generateRatingCountAndAvgForPois(pois, ratings);
+  if ((ratings || []).length > 0) {
+    generateAvgRatingPerCategory(ratings || []);
+    if ((pois || []).length > 0) {
+      generateRatingCountAndAvgForPois(pois || [], ratings || []);
     }
   }
 }
@@ -57,7 +58,8 @@ export function generatePerRating(commentList: Comment[]): DataSet {
 }
 
 export function generatePoisPerCategory(categories: Category[]) {
-  const allCategories = categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
+  const cats = categories || [];
+  const allCategories = cats.filter(cat => cat.name.toLowerCase() !== "private points of interest");
   const names = allCategories.map(cat => cat.name);
   const values = new Array<number>(names.length).fill(0);
   allCategories.forEach((cat, i) => {
@@ -96,7 +98,7 @@ export function generatePrivatePoisPerUser(users: UserPoi[]) {
 }
 
 export function generateAvgRatingPerCategory(ratings: Comment[]) {
-  const allCategories = currentCategories.categories.filter(cat => cat.name.toLowerCase() !== "private points of interest");
+  const allCategories = (currentCategories.categories || []).filter(cat => cat.name.toLowerCase() !== "private points of interest");
   const names = allCategories.map(cat => cat.name);
   const values = new Array<number>(names.length).fill(0); 
   allCategories.forEach((cat, i) => {
@@ -124,7 +126,8 @@ export function generateAvgRatingPerCategory(ratings: Comment[]) {
 }
 
 export function generateRatingCountAndAvgForPois(pois: Poi[], ratings: Comment[]) {
-  const values = pois.filter(p => p.userid == null).map(poi => {
+  const ps = pois || [];
+  const values = ps.filter(p => p.userid == null).map(poi => {
     const commentsForPoi = ratings.filter(r => r.poiid === poi._id);
     const count = commentsForPoi.length;
     let avg = 0;

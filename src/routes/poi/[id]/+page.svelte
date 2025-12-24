@@ -10,6 +10,7 @@
   import { generatePerRating, refreshPlacemarkState } from "$lib/services/placemark-utils";
   import { currentCategories, currentComments, currentPois, currentUsers } from "$lib/types/runes.svelte";
   import type { ActionResult } from "@sveltejs/kit";
+  import { page } from '$app/stores';
 
   let { data }: PageProps = $props();
   let message = $state("Write your comment here...");
@@ -20,7 +21,6 @@
     labels: [],
     datasets: [{ values: [] }]
   } as DataSet);
-  import { page } from '$app/stores';
 
   const handleCommentSuccess = () => {
     return async ({ result }: { result: ActionResult }) => {
@@ -29,7 +29,7 @@
         const comment = result.data as Comment;
         currentComments.comments.push(comment);
         refreshPlacemarkState(currentCategories.categories, currentPois.pois, currentUsers.users, currentComments.comments);
-        updateLocalChart(currentComments.comments.filter((comment) => comment.poiid === data.poi?._id));
+        updateLocalChart((currentComments.comments || []).filter((comment) => comment.poiid === data.poi?._id));
       } else if (result.type === "failure") {
         message = result.data?.message;
       }
@@ -44,7 +44,7 @@
   const unsubscribePage = page.subscribe(($page) => {
     const pid = $page.params.id;
     if (pid) {
-      updateLocalChart(currentComments.comments.filter((comment) => comment.poiid === pid));
+      updateLocalChart((currentComments.comments || []).filter((comment) => comment.poiid === pid));
     }
   });
 
@@ -65,7 +65,7 @@
     <div class="column is-one-third">
       <div class="box" style="height: 60vh; overflow-y: auto">
         <Chart data={localChartData} type="bar" height={150} />
-        <RatingBox comments={currentComments.comments.filter((comment) => comment.poiid === data.poi?._id)} />
+        <RatingBox comments={(currentComments.comments || []).filter((comment) => comment.poiid === data.poi?._id)} />
         <RatingForm poiId={data.poi?._id!} enhanceFn={handleCommentSuccess} {message} bind:this={ratingForm} />
       </div>
     </div>

@@ -1,7 +1,13 @@
-#modal{ z-index: index 5000; }
+#modal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  isolation: isolate;
+}
 
 .leaflet-container {
-  z-index: 1 !important;
+  position: relative;
+  z-index: 0 !important;
 }
 
 .leaflet-pane,
